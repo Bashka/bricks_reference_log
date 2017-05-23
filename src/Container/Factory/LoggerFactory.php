@@ -18,12 +18,20 @@ class LoggerFactory implements FactoryInterface{
    * {@inheritdoc}
    */
   public function __invoke(ContainerInterface $container, $requestedName, array $options = null){
+    $config = $container->get('Configuration');
+    if(isset($options['logfile'])){
+      $logfile = $options['logfile'];
+    }
+    else{
+      $logfile = $config['log']['file'];
+    }
+
     $logger = new Logger([
       'writers' => [
         [
           'name' => StreamWriter::class,
           'options' => [
-            'stream' => $options['logfile'],
+            'stream' => $logfile,
             'formatter' => [
               'name' => ErrorHandlerFormatter::class,
               'options' => [
