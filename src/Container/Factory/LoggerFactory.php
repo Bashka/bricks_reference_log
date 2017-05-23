@@ -43,8 +43,12 @@ class LoggerFactory implements FactoryInterface{
       ],
     ]);
 
+    $referenceId = 'undefined';
+    if(isset($options['request'])){
+      $referenceId = $options['request']->getHeaderLine('Request-Id');
+    }
     $processor = new ReferenceIdProcessor;
-    $processor->setReferenceId($options['request']->getHeaderLine('Request-Id'));
+    $processor->setReferenceId($referenceId);
     $logger->addProcessor($processor);
 
     return $logger;
