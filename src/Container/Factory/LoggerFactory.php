@@ -3,6 +3,7 @@ namespace Bricks\ReferenceLog\Container\Factory;
 
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Psr\Http\Message\RequestInterface;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream as StreamWriter;
 use Zend\Log\Formatter\ErrorHandler as ErrorHandlerFormatter;
@@ -46,6 +47,9 @@ class LoggerFactory implements FactoryInterface{
     $referenceId = 'undefined';
     if(isset($options['request'])){
       $referenceId = $options['request']->getHeaderLine('Request-Id');
+    }
+    else if($container->has(RequestInterface::class)){
+      $referenceId = $container->get(RequestInterface::class)->getHeaderLine('Request-Id');
     }
     $processor = new ReferenceIdProcessor;
     $processor->setReferenceId($referenceId);
